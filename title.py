@@ -10,7 +10,7 @@ class LQR:
         self.T = T
         self.R = R
 
-    def riccati_equation(self, time):
+    def ricatti_equation(self, time):
         time_rev = time[::-1]
         L = len(time)
         res = [self.R]
