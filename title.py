@@ -1,3 +1,4 @@
+import numpy as np
 
 class LQR:
     def __init__(self, H, M, x, sigma, C, D, T, R):
