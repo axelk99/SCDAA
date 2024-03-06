@@ -1,3 +1,4 @@
+import torch
 import numpy as np
 
 class LQR:
@@ -11,7 +12,7 @@ class LQR:
         self.T = T
         self.R = R
 
-    def ricatti_equation(self, time):
+    def solve_ricatti_ode(self, time):
         time_rev = time[::-1]
         L = len(time)
         res = [self.R]
@@ -27,3 +28,36 @@ class LQR:
             res.append(S_new)
         return res
         
+    def calculate_value(self, time, space):
+        value = torch.zeros(len(space))
+        
+        S = self.solve_ricatti_ode(time) 
+
+        for i in range(len(space) - 1):
+            x = space[i, :, :]
+
+            value = torch.matmul(torch.matmul(x.T, S), x)
+
+            integral = 0
+
+            for j in range(len(time) - 1):
+                delta_t = time[j+1] - time[j]
+                integral += torch.trace(torch.matmul(torch.matmul(self.s, self.s.T), S)) * delta_t
+
+
+            value[i] = value + integral
+
+        return value
+    
+    def calculate_control(self, time, space):
+        control = torch.zeros(len(space), 2)
+
+        S = self.solve_ricatti_ode(time) 
+        D_inv = np.linalg.inv(self.D)
+        D_M = torch.matmul(D_inv, self.M.T)
+        D_M_S = torch.matmul(D_M, S)
+        for i in range(len(space)):
+            x = space[i]
+            control[i,:] = -torch.matmul(D_M_S, x)
+
+        return control
