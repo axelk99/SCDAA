@@ -42,7 +42,7 @@ class LQR:
 
             res.append(S_new)
         #torch.from_numpy(res)
-        return torch.from_numpy(res)
+        return torch.Tensor(res, dtype=torch.float64)
         
     def calculate_value(self, time, space):
         value = torch.zeros(len(space))
@@ -68,7 +68,7 @@ class LQR:
     def calculate_control(self, time, space):
         N = len(time)
         sol = self.solve_ricatti_ode(time) 
-        a_star = [torch.linalg.inv(self.D) @ self.M.T @ sol[i] for i in range(N)]
+        a_star = [-1.0 * torch.linalg.inv(self.D) @ self.M.T @ sol[i] @ space[i].T for i in range(N)]
         
         #control = torch.zeros(len(space), 2)
 
