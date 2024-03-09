@@ -41,7 +41,8 @@ class LQR:
             S_new = ( (self.H.T) @ S - S @ self.M @ D_inv @ self.M @ S + self.C + S ) * delta + S
 
             res.append(S_new)
-        return torch.stack(res)
+        #torch.from_numpy(res)
+        return torch.from_numpy(res)
         
     def calculate_value(self, time, space):
         value = torch.zeros(len(space))
