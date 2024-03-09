@@ -65,14 +65,18 @@ class LQR:
         return value
     
     def calculate_control(self, time, space):
-        control = torch.zeros(len(space), 2)
+        N = len(time)
+        sol = self.solve_ricatti_ode(time) 
+        a_star = [-1 * torch.linalg.inv(self.D) @ self.M.T @ sol[i] @ x.T for i in range(N)]
+        
+        #control = torch.zeros(len(space), 2)
 
-        S = self.solve_ricatti_ode(time) 
-        D_inv = np.linalg.inv(self.D)
-        D_M = torch.matmul(D_inv, self.M.T)
-        D_M_S = torch.matmul(D_M, S)
-        for i in range(len(space)):
-            x = space[i]
-            control[i,:] = -torch.matmul(D_M_S, x)
+        #S = self.solve_ricatti_ode(time) 
+        #D_inv = np.linalg.inv(self.D)
+        #D_M = torch.matmul(D_inv, self.M.T)
+        #D_M_S = torch.matmul(D_M, S)
+        #for i in range(len(space)):
+        #    x = space[i]
+        #    control[i,:] = -torch.matmul(D_M_S, x)
 
-        return control
+        return a_star
