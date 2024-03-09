@@ -12,8 +12,23 @@ class LQR:
         self.T = T
         self.R = R
 
+    # def solve_ricatti_ode(self, time):
+    #     time_rev = torch.flip(time, [0])
+    #     L = len(time)
+    #     res = [self.R]
+    #     D_inv = np.linalg.inv(self.D)
+
+    #     for i in range(L-1):
+    #         S = res[-1]
+    #         delta = time_rev[i] - time_rev[i+1]
+    #         if i == 0:
+    #             print(delta)
+    #         S_new = ( (self.H.T) @ S - S @ self.M @ D_inv @ self.M @ S + self.C + S ) * delta + S
+
+    #         res.append(S_new)
+    #     return res
     def solve_ricatti_ode(self, time):
-        time_rev = time[::-1]
+        time_rev = torch.flip(time, [0])
         L = len(time)
         res = [self.R]
         D_inv = np.linalg.inv(self.D)
@@ -26,7 +41,7 @@ class LQR:
             S_new = ( (self.H.T) @ S - S @ self.M @ D_inv @ self.M @ S + self.C + S ) * delta + S
 
             res.append(S_new)
-        return res
+        return torch.stack(res)
         
     def calculate_value(self, time, space):
         value = torch.zeros(len(space))
