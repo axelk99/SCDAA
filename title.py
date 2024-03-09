@@ -67,7 +67,7 @@ class LQR:
     def calculate_control(self, time, space):
         N = len(time)
         sol = self.solve_ricatti_ode(time) 
-        a_star = [-1 * torch.linalg.inv(self.D) @ self.M.T @ sol[i] @ x.T for i in range(N)]
+        a_star = [-1 * torch.linalg.inv(self.D) @ self.M.T @ sol[i] @ self.x.T for i in range(N)]
         
         #control = torch.zeros(len(space), 2)
 
