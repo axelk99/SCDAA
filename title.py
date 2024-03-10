@@ -45,25 +45,33 @@ class LQR:
         return torch.stack(res)
         
     def calculate_value(self, time, space):
-        value = torch.zeros(len(space))
-        
+        N = len(time)
+        u = torch.zeros(N)
+
+        dt = (time[-1] - time[0]) / (N-1)
+        print(dt == (time[1] - time[0]))
+
         S = self.solve_ricatti_ode(time) 
 
-        for i in range(len(space) - 1):
-            x = space[i, :, :]
+        for i in range(N):#(len(space) - 1): #?
+            x = space[i]
 
-            value = torch.matmul(torch.matmul(x.T, S), x)
+            #value = torch.matmul(torch.matmul(x.T, S[i]), x)
+            #value = x @ S[i] @ x.T
 
-            integral = 0
+            u[i] = x @ S[i] @ x.T
 
-            for j in range(len(time) - 1):
-                delta_t = time[j+1] - time[j]
-                integral += torch.trace(torch.matmul(torch.matmul(self.s, self.s.T), S)) * delta_t
+            #integral = 0
+
+            for j in range(N-i):#(len(time) - 1):
+                if j == 0:
+                    print(torch.matmul(torch.matmul(self.s.T, self.s), S[i+j]).size())
+                u[i] += torch.trace(torch.matmul(torch.matmul(self.s.T, self.s), S[i+j])) * dt
 
 
-            value[i] = value + integral
+            #u[i] += integral
 
-        return value
+        return u
     
     def calculate_control(self, time, space):
         N = len(time)
