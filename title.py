@@ -44,7 +44,7 @@ class LQR:
 
             for j in range(N-i):
                 
-                temp = torch.reshape(s, (2,1)) @ torch.reshape(s, (1,2))    
+                temp = torch.reshape(self.s, (2,1)) @ torch.reshape(self.s, (1,2))    
                 u[i] += torch.trace(temp @ S[i+j]) * dt
 
         return u
