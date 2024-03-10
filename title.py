@@ -60,6 +60,8 @@ class LQR:
             t_grid = torch.arange(t0, self.T+dt, dt)
             S = self.solve_ricatti_ode(t_grid)
 
-            a_star[i] = -1.0 * torch.linalg.inv(self.D) @ self.M.T @ S[0] @ space[i].T
+            a = -1.0 * torch.linalg.inv(self.D) @ self.M.T @ S[0] @ space[i].T
+
+            a_star[i] = a.T
 
         return a_star
