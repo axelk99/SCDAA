@@ -31,25 +31,36 @@ class LQR:
         N = len(time)
         u = torch.zeros(N)
 
-        dt = (time[-1] - time[0]) / (N-1)
-
-        S = self.solve_ricatti_ode(time) 
-
         for i in range(N):
+            t0 = time[i]
+            dt = 0.001 
+            t_grid = torch.arange(t0, self.T+dt, dt)
+            L = len(t_grid)
+
+            S = self.solve_ricatti_ode(t_grid) 
             x = space[i]
 
-            u[i] = x @ S[i] @ x.T
+            u[i] = x @ S[0] @ x.T
 
-            for j in range(N-i-1):
+            for j in range(L):
                 
                 temp = torch.reshape(self.s, (2,1)) @ torch.reshape(self.s, (1,2))    
-                u[i] += torch.trace(temp @ S[i+j]) * dt
+                u[i] += torch.trace(temp @ S[j]) * dt
 
         return u
     
     def calculate_control(self, time, space):
         N = len(time)
         sol = self.solve_ricatti_ode(time) 
-        a_star = [-1.0 * torch.linalg.inv(self.D) @ self.M.T @ sol[i] @ space[i].T for i in range(N)]
+        a_star = torch.zeros(N)
+
+        for i in range(N):
+            t0 = time[i]
+
+            dt = 0.001 
+            t_grid = torch.arange(t0, self.T+dt, dt)
+            S = self.solve_ricatti_ode(t_grid) 
+
+            a_star[i] = -1.0 * torch.linalg.inv(self.D) @ self.M.T @ S[0] @ space[i].T
 
         return a_star
