@@ -16,17 +16,15 @@ class LQR:
         time_rev = torch.flip(time, [0])
         L = len(time)
         res = [self.R]
-        D_inv = np.linalg.inv(self.D)
+        D_inv = torch.linalg.inv(self.D)
 
         for i in range(L-1):
             S = res[-1]
             delta = time_rev[i] - time_rev[i+1]
-            if i == 0:
-                print(delta)
-            S_new = ( (self.H.T) @ S - S @ self.M @ D_inv @ self.M @ S + self.C + S ) * delta + S
+            S_new = ( 2.0 * (self.H.T) @ S - S @ self.M @ D_inv @ self.M @ S + self.C) * delta + S
 
             res.append(S_new)
-
+        res = res[::-1]
         return torch.stack(res)
         
     def calculate_value(self, time, space):
