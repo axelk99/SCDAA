@@ -12,21 +12,6 @@ class LQR:
         self.T = T
         self.R = R
 
-    # def solve_ricatti_ode(self, time):
-    #     time_rev = torch.flip(time, [0])
-    #     L = len(time)
-    #     res = [self.R]
-    #     D_inv = np.linalg.inv(self.D)
-
-    #     for i in range(L-1):
-    #         S = res[-1]
-    #         delta = time_rev[i] - time_rev[i+1]
-    #         if i == 0:
-    #             print(delta)
-    #         S_new = ( (self.H.T) @ S - S @ self.M @ D_inv @ self.M @ S + self.C + S ) * delta + S
-
-    #         res.append(S_new)
-    #     return res
     def solve_ricatti_ode(self, time):
         time_rev = torch.flip(time, [0])
         L = len(time)
@@ -49,27 +34,18 @@ class LQR:
         u = torch.zeros(N)
 
         dt = (time[-1] - time[0]) / (N-1)
-        print(dt == (time[1] - time[0]))
 
         S = self.solve_ricatti_ode(time) 
 
-        for i in range(N):#(len(space) - 1): #?
+        for i in range(N):
             x = space[i]
-
-            #value = torch.matmul(torch.matmul(x.T, S[i]), x)
-            #value = x @ S[i] @ x.T
 
             u[i] = x @ S[i] @ x.T
 
-            #integral = 0
-
-            for j in range(N-i):#(len(time) - 1):
-                if j == 0:
-                    print(torch.matmul(torch.matmul(self.s.T, self.s), S[i+j]).size())
-                u[i] += torch.trace(torch.matmul(torch.matmul(self.s.T, self.s), S[i+j])) * dt
-
-
-            #u[i] += integral
+            for j in range(N-i):
+                
+                temp = torch.reshape(s, (2,1)) @ torch.reshape(s, (1,2))    
+                u[i] += torch.trace(temp @ S[i+j]) * dt
 
         return u
     
@@ -77,15 +53,5 @@ class LQR:
         N = len(time)
         sol = self.solve_ricatti_ode(time) 
         a_star = [-1.0 * torch.linalg.inv(self.D) @ self.M.T @ sol[i] @ space[i].T for i in range(N)]
-        
-        #control = torch.zeros(len(space), 2)
-
-        #S = self.solve_ricatti_ode(time) 
-        #D_inv = np.linalg.inv(self.D)
-        #D_M = torch.matmul(D_inv, self.M.T)
-        #D_M_S = torch.matmul(D_M, S)
-        #for i in range(len(space)):
-        #    x = space[i]
-        #    control[i,:] = -torch.matmul(D_M_S, x)
 
         return a_star
