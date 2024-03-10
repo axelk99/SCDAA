@@ -51,15 +51,14 @@ class LQR:
     
     def calculate_control(self, time, space):
         N = len(time)
-        sol = self.solve_ricatti_ode(time) 
-        a_star = torch.zeros(N)
+        a_star = torch.zeros(N, 1, 2)
 
         for i in range(N):
             t0 = time[i]
 
             dt = 0.001 
             t_grid = torch.arange(t0, self.T+dt, dt)
-            S = self.solve_ricatti_ode(t_grid) 
+            S = self.solve_ricatti_ode(t_grid)
 
             a_star[i] = -1.0 * torch.linalg.inv(self.D) @ self.M.T @ S[0] @ space[i].T
 
