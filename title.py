@@ -2,10 +2,9 @@ import torch
 import numpy as np
 
 class LQR:
-    def __init__(self, H, M, x, sigma, C, D, T, R):
+    def __init__(self, H, M, sigma, C, D, T, R):
         self.H = H
         self.M = M
-        self.x = x
         self.s = sigma
         self.C = C
         self.D = D
@@ -64,4 +63,4 @@ class LQR:
 
             a_star[i] = a.T
 
-        return a_star
+        return a_star.squeeze(1)
