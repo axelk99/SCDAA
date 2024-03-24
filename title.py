@@ -64,3 +64,43 @@ class LQR:
             a_star[i] = a.T
 
         return a_star.squeeze(1)
+    
+    def monte_carlo_v1(self, time, space, N, N_mc):
+        
+        C = torch.cat([self.C.unsqueeze(0) for i in range(N_mc)], dim=0)
+        D = torch.cat([self.D.unsqueeze(0) for i in range(N_mc)], dim=0)
+        D_inv = torch.linalg.inv(self.D)
+        D_inv = torch.cat([D_inv.unsqueeze(0) for i in range(N_mc)], dim=0)
+        R = torch.cat([self.R.unsqueeze(0) for i in range(N_mc)], dim=0)
+        H = torch.cat([self.H.unsqueeze(0) for i in range(N_mc)], dim=0)
+        M = torch.cat([self.M.unsqueeze(0) for i in range(N_mc)], dim=0)
+        M_T = torch.cat([self.M.T.unsqueeze(0) for i in range(N_mc)], dim=0)
+        s = torch.cat([self.s.unsqueeze(0) for i in range(N_mc)], dim=0).unsqueeze(2)
+        
+        t0 = time[0]
+        t_grid = torch.linspace(t0, self.T, N)
+        dt = (self.T-t0)/(N-1)
+
+        X = torch.cat([space[0][0].unsqueeze(0) for i in range(N_mc)], dim=0)
+        X = X.unsqueeze(2)
+        
+        z = torch.normal(mean = 0, std = 1, size = [N, N_mc, 1, 1], dtype = torch.float64)
+
+        S = self.solve_ricatti_ode(t_grid)
+        #S = torch.cat([S for i in range(N_mc)], dim=0).reshape(N_mc, S.shape[0], S.shape[1], S.shape[2])
+        
+        J = torch.zeros(N_mc, 1, 1)
+        
+        for i in range(4):
+            #shape X and a = Nmc, 2, 1 (column as in theory)
+            Si = torch.cat([S[i].unsqueeze(0) for k in range(N_mc)], dim=0)
+
+            a = -1.0 * (D_inv @ M_T @ Si @ X)
+
+            J += (X.reshape(N_mc,1,2) @ C @ X + a.reshape(N_mc,1,2) @ D @ a) * dt
+
+            X_new = X + (H @ X + M @ a) * dt + s * z[i] * np.sqrt(dt)
+            X = X_new
+
+        J += X.reshape(N_mc,1,2) @ R @ X
+        return J
