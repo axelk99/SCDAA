@@ -96,7 +96,8 @@ class LQR:
             #shape X and a = Nmc, 2, 1 (column as in theory)
             Si = torch.cat([S[i].unsqueeze(0) for k in range(N_mc)], dim=0)
 
-            a = -1.0 * (D_inv @ M_T @ Si @ X)
+            #a = -1.0 * (D_inv @ M_T @ Si @ X)
+            a = torch.ones(N_mc, 2, 1, dtype=torch.float64)
 
             J += (X.reshape(N_mc,1,2) @ C @ X + a.reshape(N_mc,1,2) @ D @ a) * dt
 
