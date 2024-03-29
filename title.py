@@ -20,7 +20,7 @@ class LQR:
         for i in range(L-1):
             S = res[-1]
             delta = time_rev[i] - time_rev[i+1]
-            S_new = ( 2.0 * (self.H.T) @ S - S @ self.M @ D_inv @ self.M @ S + self.C) * delta + S
+            S_new = ( 2.0 * (self.H.T) @ S - S @ self.M @ D_inv @ self.M.T @ S + self.C) * delta + S
 
             res.append(S_new)
         res = res[::-1]
@@ -78,8 +78,9 @@ class LQR:
         s = torch.cat([self.s.unsqueeze(0) for i in range(N_mc)], dim=0).unsqueeze(2)
         
         t0 = time[0]
-        t_grid = torch.linspace(t0, self.T, N)
-        dt = (self.T-t0)/(N-1)
+        t_grid = torch.linspace(t0, self.T, N+1)
+        dt = (self.T-t0)/N
+        
 
         X = torch.cat([space[0][0].unsqueeze(0) for i in range(N_mc)], dim=0)
         X = X.unsqueeze(2)
@@ -91,7 +92,7 @@ class LQR:
         
         J = torch.zeros(N_mc, 1, 1)
         
-        for i in range(4):
+        for i in range(N):
             #shape X and a = Nmc, 2, 1 (column as in theory)
             Si = torch.cat([S[i].unsqueeze(0) for k in range(N_mc)], dim=0)
 
