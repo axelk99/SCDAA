@@ -106,3 +106,21 @@ class LQR:
 
         J += X.reshape(N_mc,1,2) @ R @ X
         return J
+    
+    def error_calculation(self, time, space, time_arr, mc_arr):
+        start = TIME()
+        e = []
+        n1, n2 = len(time_arr), len(mc_arr)
+        
+        val_analyt = self.calculate_value(time, space)
+             
+        for i in range(n1):
+            for j in range(n2):
+                J_arr = self.monte_carlo_v1(time, space, N = time_arr[i], N_mc = mc_arr[j])
+                val_mc1 = torch.mean(J_arr)
+                e.append( np.abs(val_analyt.item() - val_mc1.item()) / np.abs(val_analyt.item()) )
+
+        end = TIME()
+        print('time in mins, {:.3f}'.format((end - start)/60))
+        
+        return e
