@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from time import time as TIME
 
 class LQR:
     def __init__(self, H, M, sigma, C, D, T, R):
