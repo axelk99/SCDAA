@@ -80,7 +80,7 @@ class Net_DGM(nn.Module):
         return output
 
 def get_gradient(output, x):
-    grad = torch.autograd.grad(output, x, grad_outputs=torch.ones_like(output), create_graph=True, retain_graph=True, only_inputs=True)[0]
+    grad = torch.autograd.grad(output, x, grad_outputs=torch.ones_like(output), create_graph=True, retain_graph=True, only_inputs=True, allow_unused=True)[0]
     return grad
 
 def get_hessian(grad, x):
