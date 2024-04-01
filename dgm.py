@@ -83,6 +83,16 @@ def get_gradient(output, x):
     grad = torch.autograd.grad(output, x, grad_outputs=torch.ones_like(output), create_graph=True, retain_graph=True, only_inputs=True)[0]
     return grad
 
+def get_hessian(grad, x):
+    hess = []
+    for d in range(x.shape[1]): #over x1, x2, ... (in our case x1, x2)
+        v = grad[:,d].view(-1,1) #to have the column of derivative wrt xi
+        grad2 = torch.autograd.grad(v,x,grad_outputs=torch.ones_like(v), only_inputs=True, create_graph=True, retain_graph=True)[0]
+        hess.append(grad2)    
+    hess = torch.cat(hess,1).reshape(-1, 2, 2) #to make from [[a1, a2, a3], [b1, b2, b3]] -> [[a1, b1], [a2, b2], [a3, b3]]
+    
+    return hess
+
 class FFN(nn.Module):
 
     def __init__(self, sizes, activation=nn.ReLU, output_activation=nn.Identity, batch_norm=False):
