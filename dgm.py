@@ -83,15 +83,33 @@ def get_gradient(output, x):
     grad = torch.autograd.grad(output, x, grad_outputs=torch.ones_like(output), create_graph=True, retain_graph=True, only_inputs=True)[0]
     return grad
 
-def get_laplacian(grad, x):
-    hess_diag = []
-    for d in range(x.shape[1]):
-        v = grad[:,d].view(-1,1)
-        grad2 = torch.autograd.grad(v,x,grad_outputs=torch.ones_like(v), only_inputs=True, create_graph=True, retain_graph=True)[0]
-        hess_diag.append(grad2[:,d].view(-1,1))    
-    hess_diag = torch.cat(hess_diag,1)
-    laplacian = hess_diag.sum(1, keepdim=True)
-    return laplacian
+class FFN(nn.Module):
+
+    def __init__(self, sizes, activation=nn.ReLU, output_activation=nn.Identity, batch_norm=False):
+        super().__init__()
+        
+        layers = [nn.BatchNorm1d(sizes[0]),] if batch_norm else []
+        for j in range(len(sizes)-1):
+            layers.append(nn.Linear(sizes[j], sizes[j+1]))
+            if batch_norm:
+                layers.append(nn.BatchNorm1d(sizes[j+1], affine=True))
+            if j<(len(sizes)-2):
+                layers.append(activation())
+            else:
+                layers.append(output_activation())
+
+        self.net = nn.Sequential(*layers)
+
+    def freeze(self):
+        for p in self.parameters():
+            p.requires_grad=False
+
+    def unfreeze(self):
+        for p in self.parameters():
+            p.requires_grad=True
+
+    def forward(self, x):
+        return self.net(x)
 
 
 
