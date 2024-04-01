@@ -66,7 +66,7 @@ class LQR:
 
         return a_star.squeeze(1)
     
-    def monte_carlo_v1(self, time, space, N, N_mc):
+    def monte_carlo_v1(self, time, space, N, N_mc, a1 = False):
         
         C = torch.cat([self.C.unsqueeze(0) for i in range(N_mc)], dim=0)
         D = torch.cat([self.D.unsqueeze(0) for i in range(N_mc)], dim=0)
@@ -97,8 +97,10 @@ class LQR:
             #shape X and a = Nmc, 2, 1 (column as in theory)
             Si = torch.cat([S[i].unsqueeze(0) for k in range(N_mc)], dim=0)
 
-            #a = -1.0 * (D_inv @ M_T @ Si @ X)
-            a = torch.ones(N_mc, 2, 1, dtype=torch.float64)
+            if a1:
+                a = torch.ones(N_mc, 2, 1, dtype=torch.float64)
+            else:
+                a = -1.0 * (D_inv @ M_T @ Si @ X)
 
             J += (X.reshape(N_mc,1,2) @ C @ X + a.reshape(N_mc,1,2) @ D @ a) * dt
 
