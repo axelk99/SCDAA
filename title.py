@@ -129,7 +129,7 @@ class LQR:
         
         return e
     
-    def data_processing(self, batch_size):
+    def data_processing1(self, batch_size):
         space = torch.rand(batch_size, 1, 2, dtype=torch.float32) * 6 - 3
         time = torch.rand(batch_size, dtype = torch.float32) * self.T
 
@@ -167,3 +167,5 @@ class LQR:
         space_val = space_val.squeeze(1)
 
         return time, space, time_val, space_val, v, v_val, v_mean, v_std
+
+    #def data_processing2(self, batch_size):
