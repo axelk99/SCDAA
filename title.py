@@ -128,3 +128,42 @@ class LQR:
         print('time in mins, {:.3f}'.format((end - start)/60))
         
         return e
+    
+    def data_processing(self, batch_size):
+        space = torch.rand(batch_size, 1, 2, dtype=torch.float32) * 6 - 3
+        time = torch.rand(batch_size, dtype = torch.float32) * self.T
+
+        v = self.calculate_value(time, space)
+
+        v_mean = v.mean()
+        v_std = v.std()
+        v = (v-v_mean)/v_std
+        v = v.unsqueeze(1).float()
+
+        space_mean = space.mean()
+        space_std = space.std()
+        time_mean = time.mean()
+        time_std = time.std()
+
+        space = (space-space_mean)/space_std
+        time = (time - time_mean)/time_std
+
+        time = time.unsqueeze(1)
+        space = space.squeeze(1)
+
+        # Validation
+        space_val = torch.rand(batch_size, 1, 2, dtype=torch.float32) * 6 - 3
+        time_val = torch.rand(batch_size, dtype = torch.float32) * self.T
+
+        v_val = self.calculate_value(time_val, space_val)
+
+        v_val = (v_val-v_mean)/v_std
+        v_val = v_val.unsqueeze(1)
+
+        space_val = (space_val- space_mean)/space_std
+        time_val = (time_val - time_mean)/time_std
+
+        time_val = time_val.unsqueeze(1)
+        space_val = space_val.squeeze(1)
+
+        return time, space, time_val, space_val, v, v_val, v_mean, v_std
