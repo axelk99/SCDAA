@@ -90,8 +90,11 @@ def get_hessian(grad, x):
         grad2 = torch.autograd.grad(v,x,grad_outputs=torch.ones_like(v), only_inputs=True, create_graph=True, retain_graph=True)[0]
         hess.append(grad2)    
     hess = torch.cat(hess,1).reshape(-1, 2, 2) #to make from [[a1, a2, a3], [b1, b2, b3]] -> [[a1, b1], [a2, b2], [a3, b3]]
-    
     return hess
+
+def error_fun(y1, y2): #y1 - NN, y2 - MC
+    val = (torch.sum((y1 - y2)**2) / len(y1)) ** 0.5 / (torch.max(y2) - torch.min(y2)) #torch.mean(y2)
+    return np.abs(val)
 
 class FFN(nn.Module):
 

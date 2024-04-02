@@ -12,6 +12,16 @@ class LQR:
         self.T = T
         self.R = R
 
+    def params(self, batch_size):
+        
+        R = torch.cat([self.R.unsqueeze(0) for i in range(batch_size)], dim=0)
+        H = torch.cat([self.H.unsqueeze(0) for i in range(batch_size)], dim=0)
+        C = torch.cat([self.C.unsqueeze(0) for i in range(batch_size)], dim=0)
+        M = torch.cat([self.M.unsqueeze(0) for i in range(batch_size)], dim=0)
+        D = torch.cat([self.D.unsqueeze(0) for i in range(batch_size)], dim=0)
+        S = torch.cat([self.s.T@self.s for i in range(batch_size)], dim=0).reshape(-1, 2, 2)
+        return R, H, C, M, D, S
+    
     def solve_ricatti_ode(self, time):
         time_rev = torch.flip(time, [0])
         L = len(time)
@@ -129,16 +139,58 @@ class LQR:
         
         return e
     
-    def data_processing1(self, batch_size):
+    def data_processing(self, batch_size, type):
         space = torch.rand(batch_size, 1, 2, dtype=torch.float32) * 6 - 3
         time = torch.rand(batch_size, dtype = torch.float32) * self.T
 
-        v = self.calculate_value(time, space)
+        if type == 'Control':
+            val = self.calculate_control(time, space)
+        elif type == 'Value':
+            val = self.calculate_value(time, space)
 
-        v_mean = v.mean()
-        v_std = v.std()
-        v = (v-v_mean)/v_std
-        v = v.unsqueeze(1).float()
+        val1 = ( val - val.mean() ) / val.std()
+
+        space1 = ( space - space.mean() ) / space.std()
+        time1 = ( time - time.mean() ) / time.std()
+
+        # Validation
+        space_val = torch.rand(batch_size, 1, 2, dtype=torch.float32) * 6 - 3
+        time_val = torch.rand(batch_size, dtype = torch.float32) * self.T
+
+
+        if type == 'Control':
+            val_val = self.calculate_control(time_val, space_val)
+        elif type == 'Value':
+            val_val = self.calculate_value(time_val, space_val)
+
+        val_val = ( val_val - val.mean() ) / val.std()
+
+        space_val = ( space_val- space.mean() ) / space.std()
+        time_val = ( time_val - time.mean() ) / time.std()
+
+        val1 = val1.unsqueeze(1)
+        val_val = val_val.unsqueeze(1)
+
+        time1 = time1.unsqueeze(1)
+        space1 = space1.squeeze(1)
+
+        time_val = time_val.unsqueeze(1)
+        space_val = space_val.squeeze(1)
+
+        return time1, space1, time_val, space_val, val1, val_val
+
+    def data_processing2(self, batch_size):
+        # Data
+        space = torch.rand(batch_size, 1, 2, dtype=torch.float64) * 6 - 3
+
+        time = torch.rand(batch_size, dtype = torch.float64)
+
+        a = self.calculate_control(time, space).float()
+
+        a_mean = a.mean()
+        a_std = a.std()
+        a = (a-a_mean)/a_std
+        a = a.float()
 
         space_mean = space.mean()
         space_std = space.std()
@@ -148,24 +200,21 @@ class LQR:
         space = (space-space_mean)/space_std
         time = (time - time_mean)/time_std
 
-        time = time.unsqueeze(1)
-        space = space.squeeze(1)
+        time = time.unsqueeze(1).float()
+        space = space.squeeze(1).float()
 
-        # Validation
-        space_val = torch.rand(batch_size, 1, 2, dtype=torch.float32) * 6 - 3
-        time_val = torch.rand(batch_size, dtype = torch.float32) * self.T
+        # Validation data
+        space_val = torch.rand(batch_size, 1, 2, dtype=torch.float64) * 6 - 3
+        time_val = torch.rand(batch_size, dtype = torch.float64)
 
-        v_val = self.calculate_value(time_val, space_val)
 
-        v_val = (v_val-v_mean)/v_std
-        v_val = v_val.unsqueeze(1)
+        a_val = LQR.calculate_control(time_val, space_val).float()
+
+        a_val = (a_val-a_mean)/a_std
+        a_val = a_val.float()
 
         space_val = (space_val- space_mean)/space_std
         time_val = (time_val - time_mean)/time_std
 
-        time_val = time_val.unsqueeze(1)
-        space_val = space_val.squeeze(1)
-
-        return time, space, time_val, space_val, v, v_val, v_mean, v_std
-
-    #def data_processing2(self, batch_size):
+        time_val = time_val.unsqueeze(1).float()
+        space_val = space_val.squeeze(1).float()
