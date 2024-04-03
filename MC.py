@@ -1,6 +1,5 @@
 import torch
 import numpy as np
-from time import time as TIME
 
 class LQR:
     def __init__(self, H, M, sigma, C, D, T, R):
@@ -122,7 +121,6 @@ class LQR:
         return J
     
     def error_calculation(self, time, space, time_arr, mc_arr):
-        start = TIME()
         e = []
         n1, n2 = len(time_arr), len(mc_arr)
         
@@ -133,9 +131,6 @@ class LQR:
                 J_arr = self.monte_carlo_v1(time, space, N = time_arr[i], N_mc = mc_arr[j])
                 val_mc1 = torch.mean(J_arr)
                 e.append( np.abs(val_analyt.item() - val_mc1.item()) / np.abs(val_analyt.item()) )
-
-        end = TIME()
-        print('time in mins, {:.3f}'.format((end - start)/60))
         
         return e
     
