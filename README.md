@@ -15,6 +15,6 @@ $$S^{'}(r) = -2H^TS(r) + S(r)MD^{-1}M^TS(r)-C, \ r \in [t, T], \ S(T) = R $$
 Note that solution takes values in the space of 2x2 matrices. The optimal Markov control is 
 $$a(t,x) = -D^{-1}M^TS(t)x$$
 **Exercise 1.1**<br />
-Solve Riccati ODE, calculate value function and optimal control for a give system state using analytical expressions<br />
-**Exercise 1.2**<br />
-Run a Monte Carlo simulation of the system with the optimal control and ensure that the solution is converging to the optimal value function in Exercise 1.1.<br />
+Solve Riccati ODE, calculate value function and optimal control for a give system state using analytical expressions <br />
+<br /> **Exercise 1.2**<br />
+Run a Monte Carlo simulation of the system with the optimal control and ensure that the solution is converging to the optimal value function obtained in Exercise 1.1.<br />
