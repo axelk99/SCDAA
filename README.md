@@ -24,8 +24,7 @@ Create a neural network that approximates the value function and obtain the weig
 The same as Exercise 2.1 but for optimal control.<br />
 <br /> **Exercise 3**<br />
 Implement the Deep Galerkin method for the linearisation of the Bellman PDE resulting from taking the constant control $\alpha = (1, 1)^T$ regardless of the state of the system:
-\begin{multline*}
-R(\theta) := R_{eqn}(\theta) + R_{boundary}(\theta) = \frac{1}{N} \sum_{i=1}^{N}\left|\partial u (t^{(i)}, x^{(i)};\theta)  + \frac{1}{2} tr(\sigma \sigma^T \partial_{xx} u(t^{(i)}, x^{(i)};\theta) +
-\\
-+ (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T H x^{(i)} \right|^2
-\end{multline*}
+
+$$R(\theta) := R_{eqn}(\theta) + R_{boundary}(\theta) = \frac{1}{N} \sum_{i=1}^{N}\left|\partial u (t^{(i)}, x^{(i)};\theta)  + \frac{1}{2} tr(\sigma \sigma^T \partial_{xx} u(t^{(i)}, x^{(i)};\theta) + $$
+
+$$+ (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T H x^{(i)} \right|^2 $$
