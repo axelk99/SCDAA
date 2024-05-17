@@ -27,4 +27,6 @@ Implement the Deep Galerkin method for the linearisation of the Bellman PDE resu
 
 $$R(\theta) := R_{eqn}(\theta) + R_{boundary}(\theta) = \frac{1}{N} \sum_{i=1}^{N}|\partial u (t^{(i)}, x^{(i)};\theta)  + \frac{1}{2} tr(\sigma \sigma^T \partial_{xx} u(t^{(i)}, x^{(i)};\theta) + $$
 
-$$+ (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T H x^{(i)} + (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T M \alpha + (x^{(i)})^T C x^{(i)} + \alpha^T D \alpha|^2 $$
+$$ + (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T H x^{(i)} + (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T M \alpha + (x^{(i)})^T C x^{(i)} + \alpha^T D \alpha|^2 + $$
+
+$$ + \frac{1}{N} \sum_{i=1}^{N}| u(T, x^{(i)}; \theta) - (x^{(i)})^T R x^{(i)} | ^ 2 $$
