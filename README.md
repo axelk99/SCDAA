@@ -1,4 +1,4 @@
-**Linear quadratic regulator** <br />
+<div align="center"> **Linear quadratic regulator** <br />
 <br />
 We consider
 
