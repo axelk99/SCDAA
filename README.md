@@ -29,7 +29,8 @@ $$R(\theta) := R_{eqn}(\theta) + R_{boundary}(\theta) = \frac{1}{N} \sum_{i=1}^{
 
 $$ + (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T H x^{(i)} + (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T M \alpha + (x^{(i)})^T C x^{(i)} + \alpha^T D \alpha|^2 + $$
 
-$$ + \frac{1}{N} \sum_{i=1}^{N}| u(T, x^{(i)}; \theta) - (x^{(i)})^T R x^{(i)} | ^ 2 $$
+$$ + \frac{1}{N} \sum_{i=1}^{N}| u(T, x^{(i)}; \theta) - (x^{(i)})^T R x^{(i)} | ^ 2 $$ <br />
+
 **Exercise 4**<br />
 Realise the policy iteration with DGM:<br />
 (i)<br />
