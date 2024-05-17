@@ -12,3 +12,5 @@ The value function is $u(t,x) := \underset{\alpha}{inf} J^{\alpha}(t,x)$. We kno
 $$u(t,x) = x^T S(t) x + \int_{t}^{T}{tr(\sigma \sigma^T S(r))dr}$$
 where S is the solution of the Riccati ODE:
 $$S^{'}(r) = -2H^TS(r) + S(r)MD^{-1}M^TS(r)-C, \ r \in [t, T], \ S(T) = R $$
+Note that solution takes values in the space of 2x2 matrices. The optimal Markov control is 
+$$a(t,x) = -D^{-1}M^TS(t)x$$
