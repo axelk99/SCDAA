@@ -100,7 +100,7 @@ class LQR:
             if not a1:        
                 a = -1.0 * (D_inv @ self.M.T @ S[i] @ X)
                 
-            J += (X.reshape(N_mc,1,2) @ self.C @ X + a.reshape(N_mc,1,2) @ D @ a) * dt
+            J += (X.reshape(N_mc,1,2) @ self.C @ X + a.reshape(N_mc,1,2) @ self.D @ a) * dt
 
             X_new = X + (self.H @ X + self.M @ a) * dt + s * z[i] * np.sqrt(dt)
             X = X_new
