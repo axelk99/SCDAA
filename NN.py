@@ -7,7 +7,7 @@ import torch.nn as nn
 import numpy as np
 
 class DGM_Layer(nn.Module):
-    
+ 
     def __init__(self, dim_x, dim_S, activation='Tanh'):
         super(DGM_Layer, self).__init__()
         
@@ -46,6 +46,9 @@ class DGM_Layer(nn.Module):
 
 
 class Net_DGM(nn.Module):
+    """
+    Neural Network for Deep Galerkin Method 
+    """   
 
     def __init__(self, dim_x, dim_S, output_dim = 1, activation='Tanh'):
         super(Net_DGM, self).__init__()
