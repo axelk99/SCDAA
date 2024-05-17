@@ -36,3 +36,4 @@ Realise the policy iteration with DGM:<br />
 (i) Execute Exercise 3 to obtain the approximation of value function for a fixed given control $\alpha$ <br />
 (ii) Train the neural network introduced in exercise 2.2 to approximate the optimal control by minimising the Hamiltonian for a fixed value function obtained in (i):
 $$H(\theta_a) = \frac{1}{N} \sum_{i=1}^N [\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T H x^{(i)} + (\partial_{x} u(t^{(i)}, x^{(i)};\theta))^T M \alpha(t^{(i)}, x^{(i)}; \theta_a) + (x^{(i)})^T C x^{(i)} + \alpha(t^{(i)}, x^{(i)}; \theta_a) ^T D \alpha(t^{(i)}, x^{(i)}; \theta_a)]$$
+Iterate (i) -> (ii) -> (i)... until convergence takes place
