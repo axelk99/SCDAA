@@ -1,1 +1,1 @@
-\textbf{Linear quadratic regulator}
+textbf{Linear quadratic regulator}
