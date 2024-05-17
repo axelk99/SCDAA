@@ -1,5 +1,4 @@
-<div align="center"> ** Linear quadratic regulator** **fds** <br />
-<h1 align="center"><b>Your Title Here</b></h1>
+<h1 align="center"><b>Linear quadratic regulator, LQR</b></h1>
 <br />
 <div align="left">We consider
 
