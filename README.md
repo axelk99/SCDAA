@@ -1,7 +1,7 @@
 **Linear quadratic regulator** <br />
 We consider
 
-$$dX_s = [H X_s + M \alpha_s] ds + \sigma dW_s, s \in [t, T], X_t = x$$
+$$dX_s = [H X_s + M \alpha_s] ds + \sigma dW_s, \ s \in [t, T],\ X_t = x$$
 Our aim is to minimize
 dXs =[HXs +Mαs]ds+σdWs,s∈[t,T],Xt =x. α t,x󰀗󰁝T⊤ ⊤ ⊤󰀘
 (1)
