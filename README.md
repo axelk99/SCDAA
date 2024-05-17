@@ -21,7 +21,7 @@ Run a Monte Carlo simulation of the system with the optimal control and ensure t
 <br /> **Exercise 2.1**<br />
 Create a neural network that approximates the value function and obtain the weights by minimising MSE cost functional given the dataset $u(t_i, x_i), \ i = 1...n$ from Exercise 1.1. <br />
 <br /> **Exercise 2.2**<br />
-The same as Exercise 2.1 but for optimal control
+The same as Exercise 2.1 but for optimal control.<br />
 <br /> **Exercise 3**<br />
 Implement the Deep Galerkin method for the linearisation of the Bellman PDE resulting from taking the constant control α = (1, 1)⊤ regardless of the state of the system:
-$$R(\theta) := R_{eqn}(\theta) + R_{boundary}(\theta)$$
+$$R(\theta) := R_{eqn}(\theta) + R_{boundary}(\theta) = \frac{1}{N} \sum_{i=1}^{N}\left|X_{t_{i-1}}-Z_{t_{i-1}}\right|^2$$
