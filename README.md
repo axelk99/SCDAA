@@ -11,4 +11,4 @@ where C ≥ 0, R ≥ 0 and D > 0, are given and deterministic and we will assume
 The value function is $u(t,x) := \underset{\alpha}{inf} J^{\alpha}(t,x)$. We know how to solve the Bellman PDE to obtain that 
 $$u(t,x) = x^T S(t) x + \int_{t}^{T}{tr(\sigma \sigma^T S(r))dr}$$
 where S is the solution of the Riccati ODE:
-$$S^{'}(r) = -2H^TS(r) + S(r)MD^{-1}MS(r)-C, \ r \in [t, T], \ S(T) = R $$
+$$S^{'}(r) = -2H^TS(r) + S(r)MD^{-1}M^TS(r)-C, \ r \in [t, T], \ S(T) = R $$
