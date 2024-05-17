@@ -1,5 +1,7 @@
-**Linear quadratic regulator**
+**Linear quadratic regulator** <br />
 We consider
+$$dY_t^\lambda=-h\left(Y_{k_\lambda\left(t\right)}^\lambda\right)dt+\sqrt{\frac{2}{\beta}}dW_t$$
+$$dX_s = [H X_s + m \alpha_s] ds$$
 Our aim is to minimize
 dXs =[HXs +Mαs]ds+σdWs,s∈[t,T],Xt =x. α t,x󰀗󰁝T⊤ ⊤ ⊤󰀘
 (1)
