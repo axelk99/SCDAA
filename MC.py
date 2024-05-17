@@ -181,4 +181,4 @@ class LQR:
         time_val = time_val.unsqueeze(1)
         space_val = space_val.squeeze(1)
 
-        return time1, space1, time_val, space_val, val1, val_val
+        return time1, space1, time_val, space_val, val1, val_val 
