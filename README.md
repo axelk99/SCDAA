@@ -18,3 +18,7 @@ $$a(t,x) = -D^{-1}M^TS(t)x$$
 Solve Riccati ODE, calculate value function and optimal control for a give system state using analytical expressions <br />
 <br /> **Exercise 1.2**<br />
 Run a Monte Carlo simulation of the system with the optimal control and ensure that the solution is converging to the optimal value function obtained in Exercise 1.1.<br />
+<br /> **Exercise 2.1**<br />
+Create a neural network that approximates the value function and obtain the weights by minimising MSE cost functional given the dataset $u(t_i, x_i)$, \ i = 1...n from Exercise 1.1
+<br /> **Exercise 2.2**<br />
+The same as Exercise 2.1 but for optimal control
