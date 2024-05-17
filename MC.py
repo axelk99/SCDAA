@@ -2,7 +2,8 @@ import torch
 import numpy as np
 
 class LQR:
-    def __init__(self, H, M, sigma, C, D, T, R):
+
+    def __init__(self, H, M, sigma, C, D, T, R): #define parameters of LQR problem
         self.H = H
         self.M = M
         self.s = sigma
@@ -11,7 +12,7 @@ class LQR:
         self.T = T
         self.R = R
 
-    def params(self, batch_size):
+    def params(self, batch_size): #multidimensional version of parameters
         
         R = torch.cat([self.R.unsqueeze(0) for i in range(batch_size)], dim=0)
         H = torch.cat([self.H.unsqueeze(0) for i in range(batch_size)], dim=0)
@@ -22,6 +23,10 @@ class LQR:
         return R, H, C, M, D, S
     
     def solve_ricatti_ode(self, time):
+        """
+        Backward difference numerical solution of Ricatti ODE
+        """
+
         time_rev = torch.flip(time, [0])
         L = len(time)
         res = [self.R]
@@ -37,6 +42,10 @@ class LQR:
         return torch.stack(res)
         
     def calculate_value(self, time, space):
+        """
+        Analytical representation of value function given the current state = (time, space) of the system
+        """
+
         N = len(time)
         u = torch.zeros(N)
 
@@ -59,6 +68,10 @@ class LQR:
         return u
     
     def calculate_control(self, time, space):
+        """
+        Analytical representation of optimal control given the current state = (time, space) of the system
+        """
+
         N = len(time)
         a_star = torch.zeros(N, 1, 2)
 
@@ -76,6 +89,10 @@ class LQR:
         return a_star.squeeze(1)
     
     def mc_high_dim(self, time, space, N, N_mc, a1 = False):
+        """
+        Value function equals the expected value of optimisation objective J wrt optimal control and system current state
+        Expected value is calculated via Monte Carlo simulations, where N_mc trajectories are simultaneously sampled at each t = 1...N
+        """
 
         D_inv = torch.linalg.inv(self.D)
         s = self.s.unsqueeze(2)
@@ -83,7 +100,8 @@ class LQR:
         t0 = time[0]
         t_grid = torch.linspace(t0, self.T, N+1)
         dt = (self.T-t0)/N
-        
+
+        #shape X and a = Nmc, 2, 1 (column as in theory)
         X = torch.cat([space[0][0].unsqueeze(0) for i in range(N_mc)], dim=0)
         X = X.unsqueeze(2)
 
@@ -94,8 +112,7 @@ class LQR:
         
         S = self.solve_ricatti_ode(t_grid)
 
-        for i in range(N):
-            #shape X and a = Nmc, 2, 1 (column as in theory)
+        for i in range(N): #loop over time
 
             if not a1:        
                 a = -1.0 * (D_inv @ self.M.T @ S[i] @ X)
@@ -109,6 +126,10 @@ class LQR:
         return J
     
     def error_calculation(self, time, space, time_arr, mc_arr):
+        """
+        Relative error between analytical value function and value function calculated with MC for a give system state
+        """
+
         e = []
         n1, n2 = len(time_arr), len(mc_arr)
         
@@ -116,7 +137,7 @@ class LQR:
              
         for i in range(n1):
             for j in range(n2):
-                J_arr = self.monte_carlo_v1(time, space, N = time_arr[i], N_mc = mc_arr[j])
+                J_arr = self.mc_high_dim(time, space, N = time_arr[i], N_mc = mc_arr[j])
                 val_mc1 = torch.mean(J_arr)
                 e.append( np.abs(val_analyt.item() - val_mc1.item()) / np.abs(val_analyt.item()) )
         
