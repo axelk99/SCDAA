@@ -1,6 +1,6 @@
 <div align="center"> **Linear quadratic regulator** <br />
 <br />
-We consider
+<div align="left">We consider
 
 $$dX_s = [H X_s + M \alpha_s] ds + \sigma dW_s, \ s \in [t, T],\ X_t = x$$
 Our aim is to minimize
